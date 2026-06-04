@@ -1,9 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 import math
-import sys
 import logging
-import os
 from vulnerabilities.models import Vulnerability
 
 
@@ -22,23 +20,26 @@ def obtain_nvd():
     try:
         response = requests.get(url)
         response.raise_for_status()
-        sys.stdout.write("Data pulled successfully")
+        logger.info("Data pulled successfully")
         response_json = response.json()
         if response_json['totalResults'] <= 2000:
             return response_json
         else:
             # [todo - loop through pages]
-            all_responses = []
-            total_pages = math.ceil(response_json['totalResults'] / 2000)
-            pass
+            # all_responses = []
+            # total_pages = math.ceil(response_json['totalResults'] / 2000)
+            logger.warning(
+                f"Result set exceeds 2000 ({response_json['totalResults']} results) — pagination not yet implemented, returning first page only")
+            return response_json
+
     except requests.exceptions.HTTPError as errh:
-        sys.stdout.write(f"HTTP Error:{errh}")
+        logger.error(f"HTTP Error:{errh}")
     except requests.exceptions.ConnectionError as errc:
-        sys.stdout.write(f"Connection Error: {errc}")
+        logger.error(f"Connection Error: {errc}")
     except requests.exceptions.Timeout as errt:
-        sys.stdout.write(f"Timeout Error:{errt}")
+        logger.error(f"Timeout Error:{errt}")
     except requests.exceptions.RequestException as err:
-        sys.stdout.write(f"Something else:{err}")
+        logger.error(f"Something else:{err}")
 
 
 def parse_nvd_data(response):
@@ -87,8 +88,6 @@ def parse_nvd_data(response):
         vul_list.append(vuln_data)
     return vul_list
 
-    # print(vul_list)
-
 
 def obtain_epss_data(parsed_data):
     pass
@@ -99,14 +98,20 @@ def save_nvd_data(parsed_data):
     instances = [Vulnerability(**data) for data in parsed_data]
 
     # single batch db insert
-    Vulnerability.objects.bulk_create(
-        instances,
-        update_conflicts=True,
-        unique_fields=['cve_id'],
-        update_fields=[
-            'cvss_score',
-            'description',
-            'last_modification_date',
-            'references'
-        ]
-    )
+    try:
+
+        Vulnerability.objects.bulk_create(
+            instances,
+            update_conflicts=True,
+            unique_fields=['cve_id'],
+            update_fields=[
+                'cvss_score',
+                'description',
+                'last_modification_date',
+                'references'
+            ]
+        )
+        logger.info(f"Saved data {len(instances)} vulnerabilities to db")
+    except Exception as e:
+        logger.error(f"Failed to save vulnerabilities:{e}")
+        raise
