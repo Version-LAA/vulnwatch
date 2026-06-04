@@ -75,8 +75,10 @@ class Command(BaseCommand):
             }
 
             if metrics31 != 'no data':
-                vuln_data['cvss_score'] = metrics31[0]['cvssData'].get(
-                    'baseScore', 0)
+                basescore = metrics31[0]['cvssData'].get('baseScore', None)
+                if basescore:
+                    basescore = float(basescore)
+                vuln_data['cvss_score'] = basescore
 
             vul_list.append(vuln_data)
         return vul_list
