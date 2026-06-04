@@ -2,11 +2,15 @@ import requests
 from datetime import datetime, timedelta
 import math
 import sys
+import logging
+import os
 from vulnerabilities.models import Vulnerability
 
 
 # [todo] make api call to obtain data
 # [todo] parse nvd data
+
+logger = logging.getLogger(__name__)
 
 
 def obtain_nvd():
