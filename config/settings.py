@@ -122,6 +122,49 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {
+            "format": "{asctime} - {levelname} - {message}",
+            "style": "{",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+        "verbose": {
+            "format": "{asctime} - {levelname} - {module} - {lineno} - {message}",
+            "style": "{",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        }
+
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+
+        },
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": "logs/vulnwatch.log",
+            "formatter": "verbose",
+
+        }
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "vulnerabilities": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        }
+    }
+}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
