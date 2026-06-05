@@ -3,77 +3,81 @@
 {% block title %}Home{% endblock title %}
 {% block content %}
   <h1>Homepage</h1>
-  <div class="stats shadow">
-    <div class="stat">
-      <div class="stat-figure text-secondary">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          class="inline-block h-8 w-8 stroke-current"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          ></path>
-        </svg>
+
+  <div class="flex justify-center mb-6">
+    <div class="stats shadow">
+      <div class="stat">
+        <div class="stat-figure text-secondary">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            class="inline-block h-8 w-8 stroke-current"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+        </div>
+        <div class="stat-title">Vulnerabilities</div>
+        <div class="stat-value">{{stats.total}}</div>
+        <div class="stat-desc">to date</div>
       </div>
-      <div class="stat-title">Vulnerabilities</div>
-      <div class="stat-value">{{stats.total}}</div>
-      <div class="stat-desc">to date</div>
+
+      <div class="stat">
+        <div class="stat-figure text-secondary">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            class="inline-block h-8 w-8 stroke-current"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+            ></path>
+          </svg>
+        </div>
+        <div class="stat-title">Critical Vulnerabilities</div>
+        <div class="stat-value">{{critical_count}}</div>
+        <div class="stat-desc">CVSS Score > 9.0 </div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-figure text-secondary">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            class="inline-block h-8 w-8 stroke-current"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+            ></path>
+          </svg>
+        </div>
+        <div class="stat-title">Avg CVSS_Score</div>
+        <div class="stat-value">{{avg_cvss}}</div>
+        <div class="stat-desc">↘︎ 90 (14%)</div>
+      </div>
     </div>
 
-    <div class="stat">
-      <div class="stat-figure text-secondary">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          class="inline-block h-8 w-8 stroke-current"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-          ></path>
-        </svg>
-      </div>
-      <div class="stat-title">Critical Vulnerabilities</div>
-      <div class="stat-value">{{critical_count}}</div>
-      <div class="stat-desc">CVSS Score > 9.0 </div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-figure text-secondary">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          class="inline-block h-8 w-8 stroke-current"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
-          ></path>
-        </svg>
-      </div>
-      <div class="stat-title">Avg CVSS_Score</div>
-      <div class="stat-value">{{avg_cvss}}</div>
-      <div class="stat-desc">↘︎ 90 (14%)</div>
-    </div>
   </div>
+
 
   <div class="overflow-x-auto">
     <table class="table">
       <!-- head -->
       <thead>
         <tr>
-          <th></th>
           <th>CVE</th>
           <th>CVSS Score</th>
           <th>Description</th>
@@ -83,9 +87,8 @@
         </tr>
       </thead>
       <tbody>
-        {% for v in filtered_vulnerabilities  %}
+        {% for v in page_obj  %}
         <tr>
-          <th>{{v.id}}</th>
           <td>{{v.cve_id}}</td>
           <td>{{v.cvss_score}}</td>
           <td>{{v.description}}</td>
@@ -96,4 +99,25 @@
       </tbody>
     </table>
   </div>
+
+  <div class="join">
+      {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}" class="join-item btn">«</a>
+      {% else %}
+          <button class="join-item btn btn-disabled">«</button>
+      {% endif %}
+
+      <button class="join-item btn">
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </button>
+
+      {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}" class="join-item btn">»</a>
+      {% else %}
+          <button class="join-item btn btn-disabled">»</button>
+      {% endif %}
+  </div>
+
+
+
 {% endblock content %}
