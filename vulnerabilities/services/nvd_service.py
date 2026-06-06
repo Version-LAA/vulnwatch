@@ -20,7 +20,7 @@ def obtain_nvd():
     try:
         response = requests.get(url)
         response.raise_for_status()
-        logger.info("Data pulled successfully")
+        logger.info("NVD Data pulled successfully")
         response_json = response.json()
         if response_json['totalResults'] <= 2000:
             return response_json
