@@ -8,4 +8,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Testing CVE_ORG_Command")
         cve_data = cve_service.obtain_updates()
-        cve_service.parse_cve_org_data(cve_data)
+        cve_service.save_cve_org_data(cve_data)
