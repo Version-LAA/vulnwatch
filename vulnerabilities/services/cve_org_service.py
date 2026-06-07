@@ -18,12 +18,13 @@ def fetch_cve_data(url):
         if valid_cve_data:
             valid_cve_data = valid_cve_data.get('cna', False)
 
+        cvss_score = None
         if valid_cve_data != False:
-            available_metrics = valid_cve_data.get('metrics')
+            available_metrics = valid_cve_data.get('metrics', [])
             for metric in available_metrics:
                 if 'cvssV3_1' in metric:
-                    print(metric['cvssV3_1'].get('baseScore', None))
                     cvss_score = metric['cvssV3_1'].get('baseScore', None)
+                    break
                 else:
                     cvss_score = None
 
@@ -49,8 +50,7 @@ def fetch_cve_data(url):
         logger.error(f"Timeout error occured: {errt}")
     except requests.exceptions.RequestException as err:
         logger.error(f"Something else: {err}")
-
-    return output
+        return None
 
 
 def obtain_updates():
@@ -67,20 +67,14 @@ def obtain_updates():
             for vuln in new_vulns:
                 cveid = vuln.get('cveId', None)
                 github_url = vuln.get('githubLink', None)
-                vuln_long_data = fetch_cve_data(github_url)
+                vuln_long_data = fetch_cve_data(github_url) or {}
 
-                title = None if vuln_long_data == False else vuln_long_data.get(
-                    'title', None)
-                cvss_score = None if vuln_long_data == False else vuln_long_data.get(
-                    'cvss_score', None)
-                version = None if vuln_long_data == False else vuln_long_data.get(
-                    'version', None)
-                description = None if vuln_long_data == False else vuln_long_data.get(
-                    'description', None)
-                published_date = None if vuln_long_data == False else vuln_long_data.get(
-                    'published_date', None)
-                application_name = None if vuln_long_data == False else vuln_long_data.get(
-                    'application_name', None)
+                title = vuln_long_data.get('title', None)
+                cvss_score = vuln_long_data.get('cvss_score', None)
+                version = vuln_long_data.get('version', None)
+                description = vuln_long_data.get('description', None)
+                published_date = vuln_long_data.get('published_date', None)
+                application_name = vuln_long_data.get('application_name', None)
                 vuln_data = {
                     'cve_id': cveid,
                     'source': 'cve.org',
