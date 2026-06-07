@@ -2,7 +2,11 @@
 
 {% block title %}Home{% endblock title %}
 {% block content %}
-  <h1>Homepage</h1>
+<div class="header">
+
+</div>
+  <h1>VulnWatch</h1>
+  <p>Real-time critical vulnerability intelligence — automated daily from NVD and CVE.org.</p>
 
   <div class="flex justify-center mb-6">
     <div class="stats shadow">
@@ -80,6 +84,7 @@
         <tr>
           <th>CVE</th>
           <th>CVSS Score</th>
+          <th>Title</th>
           <th>Description</th>
           <th>Published Date</th>
           <th>Last Modified Date</th>
@@ -92,10 +97,12 @@
         <tr>
           <td>{{v.cve_id}}</td>
           <td>{{v.cvss_score}}</td>
+          <td>{{v.title}}</td>
           <td>{{v.description}}</td>
           <td>{{v.published_date}}</td>
           <td>{{v.last_modification_date}}</td>
           <td>{{v.source}}</td>
+
         </tr>
         {% endfor %}
       </tbody>
