@@ -44,7 +44,7 @@
           </svg>
         </div>
         <div class="stat-title">Critical Vulnerabilities</div>
-        <div class="stat-value">{{critical_count}}</div>
+        <div class="stat-value">{{stats.critical_count}}</div>
         <div class="stat-desc">CVSS Score > 9.0 </div>
       </div>
 
@@ -64,9 +64,9 @@
             ></path>
           </svg>
         </div>
-        <div class="stat-title">Avg CVSS_Score</div>
-        <div class="stat-value">{{avg_cvss}}</div>
-        <div class="stat-desc">↘︎ 90 (14%)</div>
+        <div class="stat-title">Avg CVSS Score</div>
+        <div class="stat-value">{{stats.avg_cvss|floatformat:1}}</div>
+        <div class="stat-desc"> Past 7 days </div>
       </div>
     </div>
 
@@ -82,6 +82,7 @@
           <th>CVSS Score</th>
           <th>Description</th>
           <th>Published Date</th>
+          <th>Last Modified Date</th>
           <th>Source</th>
 
         </tr>
@@ -93,6 +94,7 @@
           <td>{{v.cvss_score}}</td>
           <td>{{v.description}}</td>
           <td>{{v.published_date}}</td>
+          <td>{{v.last_modification_date}}</td>
           <td>{{v.source}}</td>
         </tr>
         {% endfor %}
