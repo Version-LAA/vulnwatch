@@ -15,7 +15,7 @@ class VulnerabilityListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         custom_queryset = Vulnerability.objects.filter(
-            cvss_score__isnull=False)
+            cvss_score__isnull=False).order_by('-published_date')
         paginator = Paginator(custom_queryset, self.paginate_by)
         page_number = self.request.GET.get('page')
         page_obj = paginator.get_page(page_number)
