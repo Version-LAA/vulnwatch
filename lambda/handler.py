@@ -256,6 +256,6 @@ def handler(event, context):
         return {"statusCode": 500, "body": json.dumps(str(e))}
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    handler({}, {})
+#     handler({}, {})
