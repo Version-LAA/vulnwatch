@@ -136,21 +136,20 @@ LOGGING = {
             "format": "{asctime} - {levelname} - {module} - {lineno} - {message}",
             "style": "{",
             "datefmt": "%Y-%m-%d %H:%M:%S",
-        }
-
+        },
     },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
             "formatter": "simple",
-
         },
         "file": {
-            "class": "logging.FileHandler",
+            "class": "logging.handlers.TimedRotatingFileHandler",
             "filename": "logs/vulnwatch.log",
             "formatter": "verbose",
-
-        }
+            "when": "midnight",
+            "backupCount": 30,
+        },
     },
     "root": {
         "handlers": ["console"],
@@ -158,11 +157,11 @@ LOGGING = {
     },
     "loggers": {
         "vulnerabilities": {
-            "handlers": ["console"],
-            "level": "INFO",
+            "handlers": ["console", "file"],
+            "level": "DEBUG",
             "propagate": False,
-        }
-    }
+        },
+    },
 }
 
 
