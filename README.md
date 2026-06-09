@@ -1,40 +1,46 @@
-# VulnWatch 🔍
 
-> Real-time critical vulnerability intelligence — automated daily from NVD and CVE.org.
+
+<p align="center">
+  <img width="800" height="400" alt="vulnwatch_logo_mint_background" src="https://github.com/user-attachments/assets/8e0d959a-e60f-47ca-8556-54a01f25982d" />
+</p>
+
+> Real-time critical vulnerability intelligence, automated daily from NVD and CVE.org.
 
 ## What It Does
 
 VulnWatch is a personal vulnerability monitoring dashboard that automatically
 ingests, normalizes, and displays critical CVEs daily.
 
-## Tech Stack
+## Tech Stack I Used
 
 - **Backend:** Django 6.0.5, Python 3.13
 - **Database:** PostgreSQL
 - **Automation:** AWS Lambda + EventBridge
-- **Data Sources:** NVD API, CVE.org GitHub delta feed
+- **Data Sources:** NVD API, CVE.org feed
 - **Frontend:** Tailwind CSS v4, DaisyUI
 - **Package Management:** uv
 
 ## Architecture
 
-**AWS EventBridge** service handles handles the daily cron/scheduling that triggers the AWS Lambda service)
-        ↓
-**AWS Lambda** handles the automation of backend services.
-        ↓
-**CVE.org + NVD API** are both fetched via backend services daily.
-        ↓
-**PostgreSQL** is utilized to store vulnerability data obtained.
-        ↓
-**Django** is the webframework used to host a read only dashboard.
+1. **AWS EventBridge** service handles the daily cron/scheduling that triggers the AWS Lambda service)
+
+2. **AWS Lambda** handles the automation of backend services.
+
+3. **CVE.org + NVD API** are both fetched via backend services multiple times daily.
+      
+4. **PostgreSQL** is used to store vulnerability data obtained.
+     
+5. **Django** is the web framework used to host a read-only dashboard.
 
 ## Features
-- Daily automated CVE ingestion via AWS Lambda
+- Daily automated CVE ingestion via AWS Lambda and EventBridge
 - NVD API integration with CVSS score parsing
 - CVE.org delta file processing
-- Dashboard with critical vulnerability stats
+- Dashboard with critical vulnerability stats of cve's that currently have a cvss score.
 - Paginated vulnerability table
-- Upsert logic — no duplicates on re-runs
+
+<img width="800" height="400" alt="Screenshot 2026-06-08 at 8 08 15 PM" src="https://github.com/user-attachments/assets/cacb718c-ba24-4fef-a394-d603076c47f9" />
+
 
 ## Roadmap
 V2
