@@ -24,6 +24,7 @@ def get_db_connection():
         user=os.environ['DB_USER'],
         password=os.environ['DB_PASSWORD'],
         port=os.environ['DB_PORT'],
+        sslmode='require',
     )
 
 
@@ -127,7 +128,7 @@ def fetch_cve_org_delta(url):
 
             output = {
                 'published_date': published_date,
-                'title': valid_cve_data['title'],
+                'title': valid_cve_data.get('title', None),
                 'description': valid_cve_data.get('descriptions')[0].get('value', None),
                 'cvss_score': cvss_score,
                 'version': valid_cve_data.get('affected')[0].get('versions')[0].get('version'),
@@ -165,6 +166,7 @@ def fetch_parse_cve_org_data():
         if new_vulns != False:
             for vuln in new_vulns:
                 cveid = vuln.get('cveId', None)
+                logger.info(f"Evaluating CVE {cveid}")
                 github_url = vuln.get('githubLink', None)
                 vuln_long_data = fetch_cve_org_delta(github_url) or {}
 
@@ -190,6 +192,7 @@ def fetch_parse_cve_org_data():
                     'is_kev': False,
 
                 }
+                logger.info(f"successfully built: {vuln_data}")
                 all_vulns.append(vuln_data)
 
         return all_vulns
@@ -248,6 +251,7 @@ def handler(event, context):
 
         cve_parsed = fetch_parse_cve_org_data()
         save_to_db(cve_parsed)
+        logger.info("VulnWatch Lambda Finished")
 
         return {"statusCode": 200, "body": json.dumps("Success")}
 
