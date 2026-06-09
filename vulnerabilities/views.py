@@ -1,12 +1,12 @@
-from django.shortcuts import render
-from django.views.generic import ListView
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView, DetailView
 from django.db.models import Avg, Count, Max, Q
 from django.core.paginator import Paginator
 from datetime import timedelta
 from django.utils import timezone
 
 from .models import Vulnerability
-# Create your views here.
+# Create your views here.P
 
 
 class VulnerabilityListView(ListView):
@@ -35,3 +35,8 @@ class VulnerabilityListView(ListView):
 
         context['stats'] = stats
         return context
+
+
+class VulnerabilityDetailView(DetailView):
+    model = Vulnerability
+    template_name = "vulnerability_detail.html"
