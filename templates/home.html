@@ -76,8 +76,40 @@
 
   </div>
 
-
   <div class="overflow-x-auto">
+    <table id="VulnerabilitiesTable" class="hover">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th>CVE</th>
+          <th>CVSS Score</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Published Date</th>
+          <th>Last Modified Date</th>
+          <th>Source</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        {% for v in vulnerabilities %}
+        <tr>
+          <td>{{v.cve_id}}</td>
+          <td>{{v.cvss_score}}</td>
+          <td>{{v.title}}</td>
+          <td>{{v.description}}</td>
+          <td>{{v.published_date}}</td>
+          <td>{{v.last_modification_date}}</td>
+          <td>{{v.source}}</td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+
+  {% comment %} <div class="overflow-x-auto">
     <table class="table">
       <!-- head -->
       <thead>
@@ -107,9 +139,9 @@
         {% endfor %}
       </tbody>
     </table>
-  </div>
+  </div> {% endcomment %}
 
-  <div class="join">
+  {% comment %} <div class="join">
       {% if page_obj.has_previous %}
           <a href="?page={{ page_obj.previous_page_number }}" class="join-item btn">«</a>
       {% else %}
@@ -125,7 +157,7 @@
       {% else %}
           <button class="join-item btn btn-disabled">»</button>
       {% endif %}
-  </div>
+  </div> {% endcomment %}
   <footer class="footer footer-center p-4 bg-base-300 text-base-content mt-8">
     <p class="text-sm">
         Engineered by <a href="https://github.com/version-laa" class="link">Latoya A</a>
@@ -133,6 +165,11 @@
     </p>
 </footer>
 
-
-
+{% block scripts %}
+<script>
+        $(document).ready(function() {
+            $('#VulnerabilitiesTable').DataTable();
+        });
+</script>
+{% endblock scripts %}
 {% endblock content %}
