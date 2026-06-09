@@ -77,7 +77,7 @@
   </div>
 
   <div class="overflow-x-auto">
-    <table id="VulnerabilitiesTable" class="table">
+    <table id="VulnerabilitiesTable" class="hover">
       <!-- head -->
       <thead>
         <tr>
@@ -92,7 +92,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for v in page_obj  %}
+        {% for v in vulnerabilities %}
         <tr>
           <td>{{v.cve_id}}</td>
           <td>{{v.cvss_score}}</td>
