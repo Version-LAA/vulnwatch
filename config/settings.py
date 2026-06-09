@@ -16,7 +16,6 @@ from pathlib import Path
 load_dotenv()
 
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -33,7 +32,7 @@ SECRET_KEY = 'django-insecure-8xa&%auy-=!(i(ry*5-nah+m5fta5d(kjxuhxm+uqws98t&t==
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", '127.0.0.1').split(",")
 
 
 # Application definition
@@ -188,7 +187,7 @@ LOGGING = {
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 if not DEBUG:
 
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
