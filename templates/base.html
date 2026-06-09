@@ -6,6 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}VulnWatch{% endblock title %}</title>
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.8/css/dataTables.dataTables.min.css">
   <link href="https://cdn.jsdelivr.net/npm/daisyui@5/daisyui.css" rel="stylesheet">
 {% comment %} <link href="https://cdn.tailwindcss.com" rel="stylesheet"> {% endcomment %}
 {% tailwind_css %}
@@ -35,6 +36,8 @@
       {% block content %}
       {% endblock content %}
   </main>
-
+  <script src="https://code.jquery.com/jquery-4.0.0.js" integrity="sha256-9fsHeVnKBvqh3FB2HYu7g2xseAZ5MlN6Kz/qnkASV8U=" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/2.3.8/js/dataTables.min.js"></script>
+  {% block scripts %}{% endblock scripts %}
 </body>
 </html>
