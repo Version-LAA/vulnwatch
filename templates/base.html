@@ -6,29 +6,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}VulnWatch{% endblock title %}</title>
+  <link rel="icon" href="{% static 'images/favicon.ico'%}">
   <link rel="stylesheet" href="https://cdn.datatables.net/2.3.8/css/dataTables.dataTables.css">
 
   <link href="https://cdn.jsdelivr.net/npm/daisyui@5/daisyui.css" rel="stylesheet">
 {% tailwind_css %}
 </head>
 <body>
-  <div class="navbar bg-[#F7431D] text-primary-content">
+  <div class="navbar bg-[#C2410C] text-primary-content">
     <div class="flex shrink-0 items-center">
-          <img src="{% static 'images/vulnwatch_logo_transparent.png' %}" alt="vulnwatch_logo" class="h-20 w-auto" />
+          <img src="{% static 'images/cw_logo_trans.png' %}" alt="vulnwatch_logo" class="h-25 w-auto" />
     </div>
     <div class="flex-none">
-      {% comment %} <ul class="menu menu-horizontal px-1">
-        <li><a>Link</a></li>
+    <ul class="menu menu-horizontal px-1">
+        {% url 'home' as home_url%}
+        {% if request.path != home_url %}
+          <li><a href="{%url 'home'%}">Home</a></li>
+        {% endif %}
         <li>
-          <details>
+          {% comment %} <details>
             <summary>Parent</summary>
             <ul class="bg-base-100 rounded-t-none p-2">
               <li><a>Link 1</a></li>
               <li><a>About Us</a></li>
             </ul>
-          </details>
+          </details> {% endcomment %}
         </li>
-      </ul> {% endcomment %}
+      </ul>
     </div>
   </div>
 

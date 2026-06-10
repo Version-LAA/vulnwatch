@@ -89,10 +89,6 @@ def parse_nvd_data(response):
     return vul_list
 
 
-def obtain_epss_data(parsed_data):
-    pass
-
-
 def save_nvd_data(parsed_data):
     # convert the list of dicts into an iterable of model instances
     instances = [Vulnerability(**data) for data in parsed_data]
