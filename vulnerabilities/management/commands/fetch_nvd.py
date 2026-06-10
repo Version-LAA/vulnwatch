@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 import vulnerabilities.services.nvd_service as nvd_service
+import vulnerabilities.services.normalize_cve_data_service as normalize_cve
 
 
 class Command(BaseCommand):
@@ -9,6 +10,8 @@ class Command(BaseCommand):
         self.stdout.write('Obtaining NVD Command')
         nvd_data = nvd_service.obtain_nvd()
         parsed_nvd = nvd_service.parse_nvd_data(nvd_data)
-        nvd_service.save_nvd_data(parsed_nvd)
+        enhanced_epss = normalize_cve.enhance_with_epss(parsed_nvd)
+        print(enhanced_epss)
+        # nvd_service.save_nvd_data(parsed_nvd)
 
         self.stdout.write("\nSuccessfully inserted to database")
