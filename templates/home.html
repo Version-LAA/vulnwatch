@@ -94,7 +94,7 @@
       <tbody>
         {% for v in vulnerabilities %}
         <tr>
-          <td>{{v.cve_id}}</td>
+          <td><a href="{{v.get_absolute_url}}">{{v.cve_id}}</a></td>
           <td>{{v.cvss_score}}</td>
           <td>{{v.title}}</td>
           <td>{{v.description}}</td>
@@ -109,55 +109,6 @@
 
   </div>
 
-  {% comment %} <div class="overflow-x-auto">
-    <table class="table">
-      <!-- head -->
-      <thead>
-        <tr>
-          <th>CVE</th>
-          <th>CVSS Score</th>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Published Date</th>
-          <th>Last Modified Date</th>
-          <th>Source</th>
-
-        </tr>
-      </thead>
-      <tbody>
-        {% for v in page_obj  %}
-        <tr>
-          <td>{{v.cve_id}}</td>
-          <td>{{v.cvss_score}}</td>
-          <td>{{v.title}}</td>
-          <td>{{v.description}}</td>
-          <td>{{v.published_date}}</td>
-          <td>{{v.last_modification_date}}</td>
-          <td>{{v.source}}</td>
-
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div> {% endcomment %}
-
-  {% comment %} <div class="join">
-      {% if page_obj.has_previous %}
-          <a href="?page={{ page_obj.previous_page_number }}" class="join-item btn">«</a>
-      {% else %}
-          <button class="join-item btn btn-disabled">«</button>
-      {% endif %}
-
-      <button class="join-item btn">
-          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-      </button>
-
-      {% if page_obj.has_next %}
-          <a href="?page={{ page_obj.next_page_number }}" class="join-item btn">»</a>
-      {% else %}
-          <button class="join-item btn btn-disabled">»</button>
-      {% endif %}
-  </div> {% endcomment %}
   <footer class="footer footer-center p-4 bg-base-300 text-base-content mt-8">
     <p class="text-sm">
         Engineered by <a href="https://github.com/version-laa" class="link">Latoya A</a>

@@ -330,6 +330,9 @@
     font-size: var(--text-xs);
     line-height: var(--tw-leading, var(--text-xs--line-height));
   }
+  .text-\[34px\] {
+    font-size: 34px;
+  }
   .text-\[64px\] {
     font-size: 64px;
   }

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
 
 # Create your models here.
 
@@ -23,6 +24,9 @@ class Vulnerability(models.Model):
 
     def __str__(self):
         return self.cve_id
+
+    def get_absolute_url(self):
+        return reverse("vulnerability_detail", kwargs={"pk": self.pk})
 
     class Meta:
         ordering = ["-cvss_score"]
