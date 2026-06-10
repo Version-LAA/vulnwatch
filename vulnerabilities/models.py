@@ -9,7 +9,7 @@ class Vulnerability(models.Model):
     cve_id = models.CharField(max_length=20, unique=True,  db_index=True)
     title = models.CharField(max_length=200, blank=True, null=True)
     cvss_score = models.DecimalField(
-        max_digits=4, decimal_places=1, null=True, blank=True)
+        max_digits=4, decimal_places=10, null=True, blank=True)
     source = models.CharField(max_length=200)
     description = models.TextField()
     epss_score = models.DecimalField(
