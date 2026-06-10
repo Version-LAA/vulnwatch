@@ -11,7 +11,7 @@ class Command(BaseCommand):
         nvd_data = nvd_service.obtain_nvd()
         parsed_nvd = nvd_service.parse_nvd_data(nvd_data)
         enhanced_epss = normalize_cve.enhance_with_epss(parsed_nvd)
-        print(enhanced_epss)
+        print(len(parsed_nvd))
         # nvd_service.save_nvd_data(parsed_nvd)
 
         self.stdout.write("\nSuccessfully inserted to database")
