@@ -7,11 +7,11 @@ class Command(BaseCommand):
     help = 'Obtain NVD data via api'
 
     def handle(self, *args, **options):
-        self.stdout.write('Obtaining NVD Command')
+        self.stdout.write('NVD Data command started:')
+
         nvd_data = nvd_service.obtain_nvd()
         parsed_nvd = nvd_service.parse_nvd_data(nvd_data)
         enhanced_epss = normalize_cve.enhance_with_epss(parsed_nvd)
-        print(len(parsed_nvd))
-        # nvd_service.save_nvd_data(parsed_nvd)
+        nvd_service.save_nvd_data(enhanced_epss)
 
-        self.stdout.write("\nSuccessfully inserted to database")
+        # self.stdout.write("\nSuccessfully inserted to database")

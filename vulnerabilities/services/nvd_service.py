@@ -12,12 +12,14 @@ logger = logging.getLogger(__name__)
 
 
 def obtain_nvd():
+    logger.info("Kicking of NVD data pull")
     pub_end = datetime.now()
-    pub_start = pub_end - timedelta(hours=12)
+    pub_start = pub_end - timedelta(days=1)
     pub_start_str = str(pub_start.strftime("%Y-%m-%d")) + \
         "T"+str(pub_start.strftime("%H:%M:%S"))
     pub_end_str = str(pub_end.strftime("%Y-%m-%d"))+"T" + \
         str(pub_end.strftime("%H:%M:%S"))
+
     url = f"https://services.nvd.nist.gov/rest/json/cves/2.0/?pubStartDate={pub_start_str}&pubEndDate={pub_end_str}"
     try:
         response = requests.get(url)
