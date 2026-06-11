@@ -44,5 +44,5 @@ def fetch_epss_score(cve_list):
     except requests.exceptions.Timeout as errt:
         logger.error(f"Timeout Error {errt}")
     except requests.exceptions.RequestException as err:
-        logger.error(f"Error: {errc}")
+        logger.error(f"Error: {err}")
     return {}

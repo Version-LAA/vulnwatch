@@ -6,6 +6,23 @@ from vulnerabilities.models import Vulnerability
 logger = logging.getLogger(__name__)
 
 
+def parse_version(affected_list):
+    # affected is a list of dictionaries
+    # all seem to include vendor, product (another list of dictionsaries with version)
+    # parse version list within cve.org dataset
+
+    parsed_version = []
+    # affected_products = affected_list.get('versions', None)
+    if affected_list == None:
+        return parse_version
+
+    for i in affected_list:
+        print(i)
+        print("")
+
+    return parsed_version
+
+
 def fetch_cve_data(url):
 
     try:
@@ -27,13 +44,24 @@ def fetch_cve_data(url):
                     break
                 else:
                     cvss_score = None
+            version = valid_cve_data.get('affected', None)
 
+            # if version:
+            #     print(version)
+
+            print(response_json['cveMetadata']['cveId'])
+            print(url)
+            print(valid_cve_data.get('affected')[0].get('product', None))
+            # print(valid_cve_data.get('affected')[0].get('product', None))
+            # print(version)
+            # print(valid_cve_data.get('affected')[0].get('versions', None))
+            print("")
             output = {
                 'published_date': published_date,
-                'title': valid_cve_data['title'],
+                'title': valid_cve_data.get('title', None),
                 'description': valid_cve_data.get('descriptions')[0].get('value', None),
                 'cvss_score': cvss_score,
-                'version': valid_cve_data.get('affected')[0].get('versions')[0].get('version'),
+                'version': None,
                 'application_name': valid_cve_data.get('affected')[0].get('product', None),
                 'cve_id': response_json['cveMetadata']['cveId']
             }

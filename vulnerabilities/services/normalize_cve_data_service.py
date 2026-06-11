@@ -35,14 +35,14 @@ def enhance_with_epss(vuln_data):
             final_results.update(epss_scores)
         logger.info(
             f"Completed full check against epss - Found: {len(final_results)} / {len(cve_list)}")
-        # print(final_results)
+
     else:
         final_results = fetch_epss_score(cve_list)
         logger.info(
             f"Completed full check against epss - Found: {len(final_results)} / {len(cve_list)}")
 
     # updating vuln data with epss data
-    updated_vuln_data = vuln_data
+    updated_vuln_data = vuln_data.copy()
     for cve in updated_vuln_data:
         cve_id = cve['cve_id']
 

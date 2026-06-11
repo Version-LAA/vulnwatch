@@ -32,3 +32,21 @@ class Vulnerability(models.Model):
         ordering = ["-cvss_score"]
         verbose_name_plural = "vulnerabilities"
         db_table = "vulnerabilities"
+
+
+class AffectedProduct(models.Model):
+    vendor = models.CharField(max_length=300, blank=True, null=True)
+    name = models.CharField(max_length=200)
+    version = models.JSONField(default=list, blank=True, null=True)
+    vulnerability = models.ForeignKey(
+        Vulnerability,
+        to_field='cve_id',
+        on_delete=models.CASCADE,
+        related_name='affected_products'
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "affected products"
