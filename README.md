@@ -1,14 +1,13 @@
 
-
 <p align="center">
-  <img width="800" height="400" alt="vulnwatch_logo_mint_background" src="https://github.com/user-attachments/assets/8e0d959a-e60f-47ca-8556-54a01f25982d" />
+  <img width="600" height="400" alt="cve_watchr_logo_mint_background_4000x3000" src="https://github.com/user-attachments/assets/c8d4b541-acf6-4474-8979-baa6bae51545" />
 </p>
 
 > Real-time critical vulnerability intelligence, automated daily from NVD and CVE.org.
 
 ## What It Does
 
-VulnWatch is a personal vulnerability monitoring dashboard that automatically
+CVE Watchr is a vulnerability monitoring dashboard that automatically
 ingests, normalizes, and displays critical CVEs daily.
 
 ## Tech Stack I Used
@@ -39,15 +38,17 @@ ingests, normalizes, and displays critical CVEs daily.
 - Dashboard with critical vulnerability stats of cve's that currently have a cvss score.
 - Paginated vulnerability table
 
-<img width="800" height="400" alt="Screenshot 2026-06-08 at 8 08 15 PM" src="https://github.com/user-attachments/assets/cacb718c-ba24-4fef-a394-d603076c47f9" />
+
+<img width="800" height="400" alt="CVE Watchr" src="https://github.com/user-attachments/assets/47293165-5f54-4138-991e-033a8ea471b3" />
 
 
 ## Roadmap
 V2
-- [ ] EPSS score integration
+- [x] Sort and Search by CVSS Score, Date range, and CVE
+- [ ] EPSS score integration $\color{orange}\textsf{-In Progress}$
+- [ ] Information pages on CVE's $\color{orange}\textsf{-In Progress}$
 - [ ] KEV status tracking
-- [ ] Filter by CVSS Score, Date range, and CVE
-- [ ] Information pages on CVE's
+
 
 ## Local Development
 
@@ -59,8 +60,8 @@ V2
 **Setup:**
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/vulnwatch.git
-cd vulnwatch
+git clone https://github.com/yourusername/cvewatchr.git
+cd cvewatchr
 
 # Install dependencies
 uv sync
@@ -84,6 +85,13 @@ python manage.py runserver
 ## Environment Variables
 
 Create a `.env` file in the project root:
+- DB_NAME=vulnwatch
+- DB_USER=[user name you create]
+- DB_PASSWORD=[db password]
+- DB_HOST=localhost
+- DB_PORT=5432
+- DEBUG=True
+- SECRET_KEY=your-secret-key-here
 
 ## Author
 
