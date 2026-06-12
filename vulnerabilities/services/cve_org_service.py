@@ -1,9 +1,26 @@
 import requests
 import logging
-from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import Vulnerability, AffectedProduct
 
 
 logger = logging.getLogger(__name__)
+
+
+def parse_version(affected_list):
+    # affected is a list of dictionaries
+    # all seem to include vendor, product (another list of dictionsaries with version)
+    # parse version list within cve.org dataset
+
+    parsed_version = []
+    # affected_products = affected_list.get('versions', None)
+    if affected_list == None:
+        return parse_version
+
+    # for i in affected_list:
+    #     print(i)
+    #     print("")
+
+    return parsed_version
 
 
 def fetch_cve_data(url):
@@ -28,14 +45,27 @@ def fetch_cve_data(url):
                 else:
                     cvss_score = None
 
+            affected_version = valid_cve_data.get('affected', None)
+            if affected_version:
+                version_results = []
+                for version in affected_version:
+                    version_output = {
+                        'vulnerability': response_json['cveMetadata']['cveId'],
+                        'name': version.get('product', None),
+                        'vendor': version.get('vendor', None),
+                        'version': version.get('versions', [])
+                    }
+                    version_results.append(version_output)
+
             output = {
                 'published_date': published_date,
-                'title': valid_cve_data['title'],
+                'title': valid_cve_data.get('title', None),
                 'description': valid_cve_data.get('descriptions')[0].get('value', None),
                 'cvss_score': cvss_score,
-                'version': valid_cve_data.get('affected')[0].get('versions')[0].get('version'),
+                'version': None,
                 'application_name': valid_cve_data.get('affected')[0].get('product', None),
-                'cve_id': response_json['cveMetadata']['cveId']
+                'cve_id': response_json['cveMetadata']['cveId'],
+                'raw_affected': version_results,
             }
             return output
         else:
@@ -57,6 +87,7 @@ def obtain_updates():
     delta_file_url = 'https://raw.githubusercontent.com/CVEProject/cvelistV5/refs/heads/main/cves/delta.json'
     try:
         all_vulns = []
+        all_products = []
         response = requests.get(delta_file_url)
         response.raise_for_status()
         logger.info("CVE Org Data pulled successfully")
@@ -68,13 +99,14 @@ def obtain_updates():
                 cveid = vuln.get('cveId', None)
                 github_url = vuln.get('githubLink', None)
                 vuln_long_data = fetch_cve_data(github_url) or {}
-
                 title = vuln_long_data.get('title', None)
                 cvss_score = vuln_long_data.get('cvss_score', None)
                 version = vuln_long_data.get('version', None)
                 description = vuln_long_data.get('description', None)
                 published_date = vuln_long_data.get('published_date', None)
-                application_name = vuln_long_data.get('application_name', None)
+                application_name = vuln_long_data.get(
+                    'application_name', None),
+                raw_affected = vuln_long_data.get('raw_affected', None)
                 vuln_data = {
                     'cve_id': cveid,
                     'source': 'cve.org',
@@ -87,10 +119,12 @@ def obtain_updates():
                     'last_modification_date': published_date,
                     'references': [vuln.get('cveOrgLink', None)],
                     'epss_score': None,
+
                 }
+                all_products.extend(raw_affected)
                 all_vulns.append(vuln_data)
 
-        return all_vulns
+        return (all_vulns, all_products)
     except requests.exceptions.HTTPError as errh:
         logger.error(f"Http ERROR of CVE ORG: {errh}")
     except requests.exceptions.ConnectionError as errc:
@@ -103,6 +137,7 @@ def obtain_updates():
 
 def save_cve_org_data(parsed_data):
     # convert the list of dicts into an iterable of model instances
+
     instances = [Vulnerability(**data) for data in parsed_data]
 
     # single batch db insert
@@ -123,6 +158,7 @@ def save_cve_org_data(parsed_data):
             ]
         )
         logger.info(f"updated data {len(instances)} vulnerabilities to db")
+
     except Exception as e:
         logger.error(f"Failed to save vulnerabilities:{e}")
         raise
