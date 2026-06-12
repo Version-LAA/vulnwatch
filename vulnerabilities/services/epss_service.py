@@ -9,7 +9,8 @@ def fetch_cve_list(vul_list):
     cve_list = []
 
     for vul in vul_list:
-
+        # print(vul)
+        # print(type(vul))
         cve_list.append(vul['cve_id'])
 
     return cve_list
