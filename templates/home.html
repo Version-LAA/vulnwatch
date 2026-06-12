@@ -54,6 +54,8 @@
         <tr>
           <th>CVE</th>
           <th>CVSS Score</th>
+          <th>EPSS Score</th>
+          <th>Vendor</th>
           <th>Description</th>
           <th>Published Date</th>
           <th>Last Modified Date</th>
@@ -67,6 +69,8 @@
           {% comment %} <td><a href="{{v.get_absolute_url}}">{{v.cve_id}}</a></td> {% endcomment %}
           <td>{{v.cve_id}}</td>
           <td>{{v.cvss_score}}</td>
+          <td>{{v.epss_percentage}}</td>
+          <td>{{v.affected_products.first.vendor}}</td>
           <td>{{v.description}}</td>
           <td>{{v.published_date}}</td>
           <td>{{v.last_modification_date}}</td>

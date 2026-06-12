@@ -4,7 +4,7 @@ from .models import Vulnerability, AffectedProduct
 
 
 class SettingVulnerability(admin.ModelAdmin):
-    list_display = ('cve_id', 'cvss_score', 'published_date')
+    list_display = ('cve_id', 'cvss_score', 'source', 'published_date')
 
 
 class SettingAffectedProduct(admin.ModelAdmin):

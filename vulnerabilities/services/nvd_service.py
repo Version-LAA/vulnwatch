@@ -3,7 +3,8 @@ from datetime import datetime, timedelta
 import math
 import logging
 from vulnerabilities.models import Vulnerability
-
+from .cve_org_service import fetch_cve_data
+from .update_affected_product import save_to_affected_products_db
 
 # [todo] make api call to obtain data
 # [todo] parse nvd data
@@ -93,6 +94,38 @@ def parse_nvd_data(response):
     return vul_list
 
 
+def update_existing_entries(vulnerabilities):
+    print("")
+    print(vulnerabilities)
+    print("")
+    print(len(vulnerabilities))
+
+    for vuln in vulnerabilities:
+        cve_id = vuln.cve_id
+        year = cve_id.split('-')[1]
+        number = cve_id.split('-')[2]
+        folder = number[:-3] + 'xxx'
+
+        url = f"https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/{year}/{folder}/{cve_id}.json"
+
+        cve_data = fetch_cve_data(url)
+        updated = False
+
+        if not vuln.cvss_score and cve_data.get('cvss_score'):
+            vuln.cvss_score = cve_data['cvss_score']
+            updated = True
+        if not vuln.title and cve_data.get('title'):
+            vuln.title = cve_data['title']
+            updated = True
+        if updated:
+            vuln.save()
+            logger.info(f"Enriched {cve_id} from CVE.org")
+
+        if cve_data.get('raw_affected'):
+            save_to_affected_products_db(cve_data['raw_affected'])
+            logger.info(f"Updated AffectedProducts db {cve_id} from CVE.org")
+
+
 def save_nvd_data(parsed_data):
     # convert the list of dicts into an iterable of model instances
     instances = [Vulnerability(**data) for data in parsed_data]
@@ -112,6 +145,12 @@ def save_nvd_data(parsed_data):
             ]
         )
         logger.info(f"Saved data {len(instances)} vulnerabilities to db")
+        cve_ids = [v.cve_id for v in instances]
+        vulnerabilities = Vulnerability.objects.filter(
+            cve_id__in=cve_ids,
+            epss_score__isnull=False)
+
+        update_existing_entries(vulnerabilities)
     except Exception as e:
         logger.error(f"Failed to save vulnerabilities:{e}")
         raise
