@@ -11,7 +11,7 @@ class Vulnerability(models.Model):
     cvss_score = models.DecimalField(
         max_digits=4, decimal_places=1, null=True, blank=True)
     source = models.CharField(max_length=200)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     epss_score = models.DecimalField(
         max_digits=11, decimal_places=11, null=True, blank=True)
     application_name = models.CharField(max_length=200, blank=True, null=True)

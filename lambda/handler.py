@@ -107,13 +107,16 @@ def parse_nvd_data(response):
 
 
 def fetch_cve_data(url):
-
     try:
         response = requests.get(url)
         response.raise_for_status()
         response_json = response.json()
-        published_date = response_json['cveMetadata']['datePublished'].split('T')[
-            0]
+
+        published_date = response_json.get(
+            'cveMetadata', {}).get('datePublished', None)
+        if published_date:
+            published_date = published_date.split('T')[0]
+
         valid_cve_data = response_json.get('containers', False)
         if valid_cve_data:
             valid_cve_data = valid_cve_data.get('cna', False)
@@ -125,42 +128,40 @@ def fetch_cve_data(url):
                 if 'cvssV3_1' in metric:
                     cvss_score = metric['cvssV3_1'].get('baseScore', None)
                     break
-                else:
-                    cvss_score = None
 
-            affected_version = valid_cve_data.get('affected', None)
-            if affected_version:
-                version_results = []
-                for version in affected_version:
-                    version_output = {
-                        'vulnerability': response_json['cveMetadata']['cveId'],
-                        'name': version.get('product', None),
-                        'vendor': version.get('vendor', None),
-                        'version': version.get('versions', [])
-                    }
-                    version_results.append(version_output)
+            # guard against None affected
+            affected = valid_cve_data.get('affected') or []
+            version_results = []
+            for item in affected:
+                version_results.append({
+                    'vulnerability': response_json['cveMetadata']['cveId'],
+                    'name': item.get('product', None),
+                    'vendor': item.get('vendor', None),
+                    'version': item.get('versions', [])
+                })
 
             output = {
                 'published_date': published_date,
                 'title': valid_cve_data.get('title', None),
-                'description': valid_cve_data.get('descriptions')[0].get('value', None),
+                'description': (valid_cve_data.get('descriptions') or [{}])[0].get('value', None),
                 'cvss_score': cvss_score,
-                'version': None,
-                'application_name': valid_cve_data.get('affected')[0].get('product', None),
+                'version': affected[0].get('versions', [{}])[0].get('version', None) if affected else None,
+                'application_name': affected[0].get('product', None) if affected else None,
                 'cve_id': response_json['cveMetadata']['cveId'],
                 'raw_affected': version_results,
             }
             return output
         else:
             logger.debug(
-                f'error parsing {response_json['cveMetadata']['cveId']}')
+                f"error parsing {response_json.get('cveMetadata', {}).get('cveId', 'unknown')}")
             return False
+
     except requests.exceptions.HTTPError as errh:
         logger.error(f"HTTP Error: {errh}")
     except requests.exceptions.ConnectionError as errc:
-        logger.error(f"Connection error occured: {errc}")
+        logger.error(f"Connection error occurred: {errc}")
     except requests.exceptions.Timeout as errt:
-        logger.error(f"Timeout error occured: {errt}")
+        logger.error(f"Timeout error occurred: {errt}")
     except requests.exceptions.RequestException as err:
         logger.error(f"Something else: {err}")
         return None
@@ -188,8 +189,11 @@ def fetch_parse_cve_org_data():
                 version = vuln_long_data.get('version', None)
                 description = vuln_long_data.get('description', None)
                 published_date = vuln_long_data.get('published_date', None)
+                if not description or not published_date:
+                    logger.debug(f"Skipping {cveid} — missing critical fields")
+                    continue
                 application_name = vuln_long_data.get(
-                    'application_name', None),
+                    'application_name', None)
                 raw_affected = vuln_long_data.get('raw_affected', None)
                 vuln_data = {
                     'cve_id': cveid,
@@ -207,7 +211,8 @@ def fetch_parse_cve_org_data():
                     'is_kev': False,
 
                 }
-                all_products.extend(raw_affected)
+                if raw_affected:
+                    all_products.extend(raw_affected)
                 all_vulns.append(vuln_data)
 
         return (all_vulns, all_products)
@@ -441,7 +446,7 @@ def update_existing_entries(cve_ids):
 
 def handler(event, context):
     logger.info("VulnWatch Lambda Starting")
-
+    print("running lambda")
     try:
         nvd_raw = fetch_nvd()
         nvd_parsed = parse_nvd_data(nvd_raw)
@@ -457,14 +462,14 @@ def handler(event, context):
         enhanced_with_data = enhance_with_epss(cve_parsed[0])
         save_to_db(enhanced_with_data)
         logger.info("VulnWatch Lambda Finished")
-
+        print("completed lambda")
         return {"statusCode": 200, "body": json.dumps("Success")}
 
     except Exception as e:
-        logger.error(f"Lambda failed: {e}")
+        logger.error(f"Lambda failed: {e}", exc_info=True)
         return {"statusCode": 500, "body": json.dumps(str(e))}
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
-#     handler({}, {})
+    handler({}, {})
